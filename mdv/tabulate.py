@@ -158,7 +158,7 @@ def _latex_line_begin_tabular(colwidths, colaligns, booktabs=False):
     alignment = { "left": "l", "right": "r", "center": "c", "decimal": "r" }
     tabular_columns_fmt = "".join([alignment.get(a, "l") for a in colaligns])
     return "\n".join(["\\begin{tabular}{" + tabular_columns_fmt + "}",
-                      "\\toprule" if booktabs else "\hline"])
+                      r"\\toprule" if booktabs else r"\hline"])
 
 LATEX_ESCAPE_RULES = {r"&": r"\&", r"%": r"\%", r"$": r"\$", r"#": r"\#",
                       r"_": r"\_", r"^": r"\^{}", r"{": r"\{", r"}": r"\}",
@@ -198,12 +198,12 @@ _table_formats = {"simple":
                               datarow=DataRow("|", "|", "|"),
                               padding=1, with_header_hide=None),
                   "fancy_grid":
-                  TableFormat(lineabove=Line("â•’", "â•", "â•¤", "â••"),
-                              linebelowheader=Line("â•ž", "â•", "â•ª", "â•¡"),
-                              linebetweenrows=Line("â”œ", "â”€", "â”¼", "â”¤"),
-                              linebelow=Line("â•˜", "â•", "â•§", "â•›"),
-                              headerrow=DataRow("â”‚", "â”‚", "â”‚"),
-                              datarow=DataRow("â”‚", "â”‚", "â”‚"),
+                  TableFormat(lineabove=Line("â’", "â", "â¤", "â•"),
+                              linebelowheader=Line("âž", "â", "âª", "â¡"),
+                              linebetweenrows=Line("âœ", "â€", "â¼", "â¤"),
+                              linebelow=Line("â˜", "â", "â§", "â"),
+                              headerrow=DataRow("â", "â", "â"),
+                              datarow=DataRow("â", "â", "â"),
                               padding=1, with_header_hide=None),
                   "pipe":
                   TableFormat(lineabove=_pipe_line_with_colons,
@@ -299,7 +299,7 @@ tabulate_formats = list(sorted(_table_formats.keys()))
 
 
 _invisible_codes = re.compile(r"\x1b\[\d*m|\x1b\[\d*\;\d*\;\d*m")  # ANSI color codes
-_invisible_codes_bytes = re.compile(b"\x1b\[\d*m|\x1b\[\d*\;\d*\;\d*m")  # ANSI color codes
+_invisible_codes_bytes = re.compile(b"\x1b\\[\\d*m|\\x1b\\[\\d*;\\d*;\\d*m")  # ANSI color codes
 
 
 def simple_separated_format(separator):
@@ -700,7 +700,7 @@ def _normalize_tabular_data(tabular_data, headers):
 def tabulate(tabular_data, headers=(), tablefmt="simple",
              floatfmt="g", numalign="decimal", stralign="left",
              missingval=""):
-    """Format a fixed width table for pretty printing.
+    r"""Format a fixed width table for pretty printing.
 
     >>> print(tabulate([[1, 2.34], [-56, "8.999"], ["2", "10001"]]))
     ---  ---------
@@ -824,13 +824,13 @@ def tabulate(tabular_data, headers=(), tablefmt="simple",
 
     >>> print(tabulate([["spam", 41.9999], ["eggs", "451.0"]],
     ...                ["strings", "numbers"], "fancy_grid"))
-    â•’â•â•â•â•â•â•â•â•â•â•â•â•¤â•â•â•â•â•â•â•â•â•â•â•â••
-    â”‚ strings   â”‚   numbers â”‚
-    â•žâ•â•â•â•â•â•â•â•â•â•â•â•ªâ•â•â•â•â•â•â•â•â•â•â•â•¡
-    â”‚ spam      â”‚   41.9999 â”‚
-    â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
-    â”‚ eggs      â”‚  451      â”‚
-    â•˜â•â•â•â•â•â•â•â•â•â•â•â•§â•â•â•â•â•â•â•â•â•â•â•â•›
+    â’ââââââââââââ¤ââââââââââââ•
+    â strings   â   numbers â
+    âžââââââââââââªââââââââââââ¡
+    â spam      â   41.9999 â
+    âœâ€â€â€â€â€â€â€â€â€â€â€â¼â€â€â€â€â€â€â€â€â€â€â€â¤
+    â eggs      â  451      â
+    â˜ââââââââââââ§ââââââââââââ›
 
     "pipe" is like tables in PHP Markdown Extra extension or Pandoc
     pipe_tables:
